@@ -27,18 +27,21 @@ class ImageRemaker:
         for w in range(self.width):
             for h in range(self.height):
                 r, g, b = pixels[w, h]
+                # if h%50==0:
+                #     print(f"old pixels {pixels[w,h]}")
                 # увеличиваем насыщение
                 r = int(r * red)
                 g = int(g * green)
                 b = int(b * blue)
+                # if h % 50 == 0:
+                #     print(f"new_pixels {r},{g},{b}")
                 # проверка чтоб не убежали за максимальное насыщение (255)
                 r = min(r, 255)
                 g = min(g, 255)
                 b = min(b, 255)
                 pixels[w, h] = r, g, b
 
-        # сохраняем изображение в папку
-        self.save_image(corrected_image, "color_corrected.jpg")
+        return corrected_image
 
     # Накладываем шум на изображение
     def add_noise(self, intns: int):
@@ -62,8 +65,7 @@ class ImageRemaker:
                 # Меняем изначальные пиксели изображения на новые
                 pixels[w, h] = r, g, b
 
-        # сохраняем новую картинку в папке
-        self.save_image(new_image, "noisy.jpg")
+        return new_image
 
     # Монотонность на изображении
 
@@ -75,7 +77,7 @@ class ImageRemaker:
         pixels = new_image.load()
 
         half_size = area_size // 2
-        #избегаем выхода за пределы краёв фотки
+        # избегаем выхода за пределы краёв фотки
         for w in range(half_size, self.width - half_size):
             for h in range(half_size, self.height - half_size):
                 # Собираем значения пикселей в области
@@ -92,7 +94,6 @@ class ImageRemaker:
                         g_sum += g
                         b_sum += b
                         count += 1
-
                 # Усредняем значения
                 new_r = r_sum // count
                 new_g = g_sum // count
@@ -101,5 +102,4 @@ class ImageRemaker:
                 # Присваиваем усредненное значение центральному пикселю
                 pixels[w, h] = (new_r, new_g, new_b)
 
-        self.save_image(new_image, "mono_img.jpg")
-
+        return new_image
