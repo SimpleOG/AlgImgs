@@ -45,10 +45,10 @@ class ImageRemaker:
         # Опять же - создаем копию изображения и работаем с ней
         new_image = self.image.copy()
         pixels = new_image.load()
-        # Опять же - картинка состоит из пикселей, представленных в виде матрицы, поэтому пробегаемся по матрице и меняем
+        # Опять же - картинка состоит из пикселей, представленных в виде матрицы,
+        # поэтому пробегаемся по матрице и меняем
         # пиксели
         for w in range(self.width):
-
             for h in range(self.height):
                 # берём текущие пиксели
                 r, g, b = pixels[w, h]
@@ -64,3 +64,42 @@ class ImageRemaker:
 
         # сохраняем новую картинку в папке
         self.save_image(new_image, "noisy.jpg")
+
+    # Монотонность на изображении
+
+    # Что мы в принципе хотим?
+    # Выбираем область размера area
+    # внутри области уменьшаем значение каждого из цветов в соотв. с усред. значением
+    def monotone(self, area_size):
+        new_image = self.image.copy()
+        pixels = new_image.load()
+
+        half_size = area_size // 2
+        #избегаем выхода за пределы краёв фотки
+        for w in range(half_size, self.width - half_size):
+            for h in range(half_size, self.height - half_size):
+                # Собираем значения пикселей в области
+                r_sum, g_sum, b_sum = 0, 0, 0
+                count = 0
+                # поищем все пиксели вокруг центрального. Для примера в area=3 получаем
+                # (w - 1, h - 1) | (w, h - 1) | (w + 1, h - 1)
+                # (w - 1, h)     |   (x, h)   | (w + 1, h)
+                # (w - 1, h + 1) | (w, h + 1) | (w + 1, h + 1)
+                for i in range(-half_size, half_size + 1):
+                    for j in range(-half_size, half_size + 1):
+                        r, g, b = pixels[w + i, h + j]
+                        r_sum += r
+                        g_sum += g
+                        b_sum += b
+                        count += 1
+
+                # Усредняем значения
+                new_r = r_sum // count
+                new_g = g_sum // count
+                new_b = b_sum // count
+
+                # Присваиваем усредненное значение центральному пикселю
+                pixels[w, h] = (new_r, new_g, new_b)
+
+        self.save_image(new_image, "mono_img.jpg")
+
