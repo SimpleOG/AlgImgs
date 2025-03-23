@@ -64,3 +64,5 @@ class ImageRemaker:
 
         # сохраняем новую картинку в папке
         self.save_image(new_image, "noisy.jpg")
+    def Sepia(self, r: float, g: float, b: float):
+        pass
