@@ -19,8 +19,8 @@ class ImageRemaker:
     def color_correction(self, red: float, green: float, blue: float):
         # скопируем изображение, чтобы не менять изначальное
         # будем производить все операции на копии
-        corrected_image = self.image.copy()
-        pixels = corrected_image.load()
+        new_image = self.image.copy()
+        pixels = new_image.load()
         # фактически картинка - матрица изпикселей, пробежимся по пикселю и изменим его
         # так как картинки совпадают, не надо снова искать w , h
 
@@ -41,7 +41,7 @@ class ImageRemaker:
                 b = min(b, 255)
                 pixels[w, h] = r, g, b
 
-        return corrected_image
+        return new_image
 
     # Накладываем шум на изображение
     def add_noise(self, intns: int):
@@ -65,6 +65,28 @@ class ImageRemaker:
                 # Меняем изначальные пиксели изображения на новые
                 pixels[w, h] = r, g, b
 
+        return new_image
+        #сепия
+    def sepia(self):
+        # вновь скопируем изображение
+        new_image = self.image.copy()
+        pixels = new_image.load() 
+        #проходимся по всей матрице из писелей
+        for w in range(self.width):
+            for h in range(self.height):
+                # берём текущие пиксели
+                r, g, b = pixels[w, h]
+                #Сепия - это теплый коричневатый оттенок, поэтому мы берем такие коэф., чтобы преобладали 
+                #красный и зеленый, после "смешиваем" их
+                r1 = 0.4 * r + 0.75 * g + 0.15 * b
+                g2 = 0.35 * r + 0.7 * g + 0.15 * b
+                b3 = 0.25 * r + 0.5 * g + 0.1 * b
+                # проверка чтоб не убежали за максимальное насыщение (255)
+                r1 = min(int(r1), 255)
+                g2 = min(int(g2), 255)
+                b3 = min(int(b3), 255)
+                # Меняем изначальные пиксели изображения на полученные
+                pixels[w, h] = r1, g2, b3
         return new_image
 
     # Монотонность на изображении
