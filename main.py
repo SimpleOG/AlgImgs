@@ -7,16 +7,22 @@ IMAGE_SOURCE = "test_photo.jpg"
 VIDEO1_SOURCE = "clip.mp4"
 if __name__ == "__main__":
     # lab1
-    # image = Image.open(IMAGE_SOURCE)
-    # remaker = l1.ImageRemaker(image)
-    # img1 = remaker.color_correction(red=1.5, green=2.5, blue=3.8)
-    # remaker.save_image(img1,"color_corrected.jpg")
-    # img2 = remaker.add_noise(intns=120)
-    # remaker.save_image(img2, "noisy.jpg")
-    # img3 = remaker.monotone(area_size=9)
-    # remaker.save_image(img3,"mono_img.jpg")
+    image = Image.open(IMAGE_SOURCE)
+    remaker = l1.ImageRemaker(image)
+
+    img1 = remaker.color_correction(red=1.5, green=2.5, blue=1.8)
+    remaker.save_image(img1,"color_corrected.jpg")
+
+    img2 = remaker.add_noise(intns=120)
+    remaker.save_image(img2, "noisy.jpg")
+
+    img3 = remaker.sepia()
+    remaker.save_image(img3, "sepia.jpg")
+
+    img4 = remaker.monotone(area_size=9)
+    remaker.save_image(img4,"mono_img.jpg")
     # lab2
-    clip = VideoFileClip(VIDEO1_SOURCE)
-    VideoMaker=l2.VideoRemaker(clip)
-    clip1=VideoMaker.change_video_while_playing(red=1.5, green=2.5, blue=3.8)
-    VideoMaker.save_clip(clip1,"noisy_vid.mp4")
+    # clip = VideoFileClip(VIDEO1_SOURCE)
+    # clip2 = VideoFileClip(VIDEO1_SOURCE)
+    # VideoMaker=l2.VideoRemaker(clip)
+    # VideoMaker.combination(clip2, 0.3, 0.2, 0.4, 100, 2)

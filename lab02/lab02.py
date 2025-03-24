@@ -2,8 +2,8 @@ import os
 
 import numpy as np
 
-import lab01.lab01 as l1
-from moviepy import VideoFileClip, ImageSequenceClip
+from lab01 import lab01 as l1
+from moviepy import VideoFileClip, ImageSequenceClip, CompositeVideoClip, vfx
 from PIL import Image
 
 
@@ -49,3 +49,20 @@ class VideoRemaker():
     def combination(self, clip2: VideoFileClip,red,green, blue, intns, area_size):
         clip1 = self.change_video_while_playing(self.clip, red, green, blue, intns, area_size, 2)
         clip2 = self.change_video_while_playing(clip2, red, green, blue, intns, area_size, 3)
+        crossfade_duration = 1  
+
+        # Применяем эффект fadeout к первому клипу
+        clip1_fadeout = clip1.fx(vfx.fadeout, crossfade_duration)
+
+        # Применяем эффект fadein ко второму клипу
+        clip2_fadein = clip2.fx(vfx.fadein, crossfade_duration)
+
+        # Наложение клипов с эффектом crossfade
+        # Второй клип начинается за `crossfade_duration` секунд до конца первого клипа
+        final_clip = CompositeVideoClip([
+            clip1_fadeout,
+            clip2_fadein.set_start(clip1.duration - crossfade_duration)
+        ])
+
+        # Сохраняем результат
+        final_clip.write_videofile("output_crossfade.mp4", fps=24)
