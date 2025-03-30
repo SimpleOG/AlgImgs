@@ -4,7 +4,7 @@ from moviepy import VideoFileClip
 
 
 # IMAGE_SOURCE = "test_photo.jpg"
-VIDEO1_SOURCE = "clip1s.mp4"
+VIDEO1_SOURCE = "clip.mp4"
 if __name__ == "__main__":
     # lab1
     # image = Image.open(IMAGE_SOURCE)
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     clip = VideoFileClip(VIDEO1_SOURCE)
     clip2 = VideoFileClip(VIDEO1_SOURCE)
     VideoMaker=l2.VideoRemaker(clip)
-    VideoMaker.combination(clip2, 0.3, 0.2, 0.4, 100, 2)
+    VideoMaker.combination(clip2)
     # clip1 = VideoMaker.change_video_while_playing(red=1.5, green=2.5, blue=3.8)
     # VideoMaker.save_clip(clip1, "noisy_vid.mp4")
   
