@@ -23,18 +23,14 @@ class ImageRemaker:
         pixels = new_image.load()
         # фактически картинка - матрица изпикселей, пробежимся по пикселю и изменим его
         # так как картинки совпадают, не надо снова искать w , h
-
         for w in range(self.width):
             for h in range(self.height):
                 r, g, b = pixels[w, h]
-                # if h%50==0:
-                #     print(f"old pixels {pixels[w,h]}")
+
                 # увеличиваем насыщение
                 r = int(r * red)
                 g = int(g * green)
                 b = int(b * blue)
-                # if h % 50 == 0:
-                #     print(f"new_pixels {r},{g},{b}")
                 # проверка чтоб не убежали за максимальное насыщение (255)
                 r = min(r, 255)
                 g = min(g, 255)
