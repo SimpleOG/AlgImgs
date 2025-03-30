@@ -1,6 +1,4 @@
 import os
-import threading
-
 import numpy as np
 
 from lab01 import lab01 as l1
