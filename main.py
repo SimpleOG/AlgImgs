@@ -23,9 +23,17 @@ if __name__ == "__main__":
     # remaker.save_image(img4,"mono_img.jpg")
     # lab2
     clip = VideoFileClip(VIDEO1_SOURCE)
+
+    VideoMaker = l2.VideoRemaker(clip)
+    # clip1 = VideoMaker.change_video_while_playing(red=1.5, green=2.5, blue=3.8)
+    # VideoMaker.save_clip(clip1, "noisy_vid.mp4")
+    clip2 = VideoFileClip(VIDEO1_SOURCE)
+    VideoMaker.combination(clip2,0.4,0.1,0.3,100,3)
+
     clip2 = VideoFileClip(VIDEO1_SOURCE)
     VideoMaker=l2.VideoRemaker(clip)
     VideoMaker.combination(clip2)
     # clip1 = VideoMaker.change_video_while_playing(red=1.5, green=2.5, blue=3.8)
     # VideoMaker.save_clip(clip1, "noisy_vid.mp4")
   
+
