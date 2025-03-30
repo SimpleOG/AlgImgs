@@ -67,7 +67,7 @@ class ImageRemaker:
 
         return new_image
         #сепия
-    def sepia(self):
+    def sepia(self, first, second, third):
         # вновь скопируем изображение
         new_image = self.image.copy()
         pixels = new_image.load() 
@@ -78,9 +78,9 @@ class ImageRemaker:
                 r, g, b = pixels[w, h]
                 #Сепия - это теплый коричневатый оттенок, поэтому мы берем такие коэф., чтобы преобладали 
                 #красный и зеленый, после "смешиваем" их
-                r1 = 0.4 * r + 0.75 * g + 0.15 * b
-                g2 = 0.35 * r + 0.7 * g + 0.15 * b
-                b3 = 0.25 * r + 0.5 * g + 0.1 * b
+                r1 = first * r + second * g + third * b
+                g2 = first * r + second * g + third * b
+                b3 = first * r + second * g + third * b
                 # проверка чтоб не убежали за максимальное насыщение (255)
                 r1 = min(int(r1), 255)
                 g2 = min(int(g2), 255)
