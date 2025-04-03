@@ -14,8 +14,8 @@ if __name__ == "__main__":
     img2 = remaker.add_noise(intns=120)
     remaker.save_image(img2, "noisy.jpg")
 
-    img3 = remaker.sepia(first = 0.35, second = 0.7, third = 0.15)
+    img3 = remaker.sepia()
     remaker.save_image(img3, "sepia.jpg")
 
-    img4 = remaker.monotone(area_size=9)
+    img4 = remaker.monotone(area_size = 3, color_step= 40)
     remaker.save_image(img4,"mono_img.jpg")
