@@ -1,12 +1,12 @@
-import multiprocessing
+
 import os
-from functools import partial
+
 import numpy as np
 
 from lab01 import lab01 as l1
-from moviepy import VideoFileClip, ImageSequenceClip, VideoClip, CompositeVideoClip, concatenate_videoclips
+from moviepy import VideoFileClip, ImageSequenceClip
 from PIL import Image
-from moviepy.video.fx import FadeIn, FadeOut, Resize, CrossFadeIn, CrossFadeOut
+
 
 
 
@@ -14,13 +14,12 @@ class VideoRemaker():
     def __init__(self, clip: VideoFileClip):
         self.clip = clip
 
-    # сделаем функцию высшего порядка
+
     def change_video_while_playing(self, clip, red, green, blue, intns, area_size, funcNum):
         # будем собирать фреймы видео пошагово
         # на основе проходящих через фильтр кадров
         # разберём текущее видео на фреймы
         frames = [frame for frame in clip.iter_frames()]
-        # Запускаем multiprocessing
         new_frames = []
         for i, frame in enumerate(frames):
             print(f"Работаю с фреймом {i}")
@@ -58,37 +57,36 @@ class VideoRemaker():
         final_clip = self.page_flip_transition(clip1, clip2, duration)
         self.save_clip(final_clip, "output_transition.mp4")
 
+    # визуальный эффект
     def page_flip_transition(self, clip1, clip2, duration):
-        # Собираем все кадры для итогового видео
         frames = []
-        fps = clip1.fps  # Используем FPS первого клипа
+        fps = clip1.fps
 
-        # 1. Добавляем кадры первого клипа ДО перехода
-        frames_before_transition = int((clip1.duration - duration) * fps)
+        # добавим кадры первого клипа до перехода
+        frames_before_transition = int((clip1.duration - duration) * fps)  # время до начала перехода
         for i in range(frames_before_transition):
-            t = i / fps
-            frames.append(clip1.get_frame(t))
+            t = i / fps  # время в секундах
+            frames.append(clip1.get_frame(t))  # получаем кадр в момент времени t
 
-        # 2. Создаем кадры перехода
+        # Создаем сам переход
         transition_frames = int(duration * fps)
         for i in range(transition_frames):
             t_transition = i / fps  # Время внутри перехода
             t_clip1 = clip1.duration - duration + t_transition  # Время в первом клипе
             t_clip2 = t_transition  # Время во втором клипе
 
-            alpha = t_transition / duration  # Прогресс перехода (0..1)
+            alpha = t_transition / duration  # Прогресс перехода от 1 клипа ко второму
             frame1 = clip1.get_frame(t_clip1)
             frame2 = clip2.get_frame(t_clip2)
 
-            # Эффект "перелистывания" (можно модифицировать)
+            # Эффект "перелистывания", т.е. наш переход
             transition_frame = (1 - alpha) * frame1 + alpha * frame2
             frames.append(transition_frame)
 
-        # 3. Добавляем оставшиеся кадры второго клипа ПОСЛЕ перехода
+        # Добавляем оставшиеся кадры второго клипа после перехода
         frames_after_transition = int((clip2.duration - duration) * fps)
         for i in range(frames_after_transition):
             t = duration + (i / fps)
             frames.append(clip2.get_frame(t))
 
-        # Создаем итоговый клип
         return ImageSequenceClip(frames, fps=fps)

@@ -12,19 +12,19 @@ if __name__ == "__main__":
     green = 0.4
     blue = 0.2
     intns = 10
-    area_size = 4
+    area_size = 8
     duration = 1.5
-    # img1 = remaker.color_correction( red, green, blue)
-    # remaker.save_image(img1,"color_corrected.jpg")
-    #
-    # img2 = remaker.add_noise(intns)
-    # remaker.save_image(img2, "noisy.jpg")
-    #
-    # img3 = remaker.sepia()
-    # remaker.save_image(img3, "sepia.jpg")
-    #
-    # img4 = remaker.monotone(area_size)
-    # remaker.save_image(img4,"mono_img.jpg")
+    img1 = remaker.color_correction( red, green, blue)
+    remaker.save_image(img1,"color_corrected.jpg")
+
+    img2 = remaker.add_noise(intns)
+    remaker.save_image(img2, "noisy.jpg")
+
+    img3 = remaker.sepia()
+    remaker.save_image(img3, "sepia.jpg")
+
+    img4 = remaker.monotone(area_size)
+    remaker.save_image(img4,"mono_img.jpg")
     # lab2
     clip = VideoFileClip(VIDEO1_SOURCE)
     VideoMaker = l2.VideoRemaker(clip)
