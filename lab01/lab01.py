@@ -91,6 +91,8 @@ class ImageRemaker:
 
     # Монотонность на изображении, переделанная!!!
 
+    # Монотонность на изображении, переделанная!!!
+
     # и так, пробуем изменить монотонность. Прошлый вариант замыливал область. Поэтому наша задача определить общий/средний цвет области и внутренний пиксель
     # закрасить таким же цветом.
     def monotone(self, area_size, color_step):
@@ -100,27 +102,27 @@ class ImageRemaker:
         half_size = area_size // 2
 
         for w in range(half_size, self.width - half_size):
-                    for h in range(half_size, self.height - half_size):
-                        # посчитаем цвета в области
-                        counts = defaultdict(int)
-                        # поищем все пиксели вокруг центрального. Для примера в area=3 получаем
-                        # (w - 1, h - 1) | (w, h - 1) | (w + 1, h - 1)
-                        # (w - 1, h)     |   (x, h)   | (w + 1, h)
-                        # (w - 1, h + 1) | (w, h + 1) | (w + 1, h + 1)
-                        for i in range(-half_size, half_size + 1):
-                            for j in range(-half_size, half_size + 1):
-                                r, g, b = pixels[w + i, h + j]
-                                # работаем с самими цветами. Для этого нам нужен color_step. Округляем цвета до ближайших, которые делятся на color_step.
-                                # то есть делаем их более похожими
-                                # чем больше брать размер области, тем более монотонным становится изображение.
-                                r = (r // color_step) * color_step
-                                g = (g // color_step) * color_step
-                                b = (b // color_step) * color_step
-                                new_color = (r, g, b)
-                                counts[new_color] += 1
+            for h in range(half_size, self.height - half_size):
+                # посчитаем цвета в области
+                counts = defaultdict(int)
+                # поищем все пиксели вокруг центрального. Для примера в area=3 получаем
+                # (w - 1, h - 1) | (w, h - 1) | (w + 1, h - 1)
+                # (w - 1, h)     |   (x, h)   | (w + 1, h)
+                # (w - 1, h + 1) | (w, h + 1) | (w + 1, h + 1)
+                for i in range(-half_size, half_size + 1):
+                    for j in range(-half_size, half_size + 1):
+                        r, g, b = pixels[w + i, h + j]
+                        # работаем с самими цветами. Для этого нам нужен color_step. Округляем цвета до ближайших, которые делятся на color_step.
+                        # то есть делаем их более похожими
+                        # чем больше брать размер области, тем более монотонным становится изображение.
+                        r = (r // color_step) * color_step
+                        g = (g // color_step) * color_step
+                        b = (b // color_step) * color_step
+                        new_color = (r, g, b)
+                        counts[new_color] += 1
 
-                        # Вычисляем самый встречающийся цвет
-                        dominant_color = max(counts.items(), key=lambda item: item[1])[0]
-                        pixels[w, h] = dominant_color
+                # Вычисляем самый встречающийся цвет
+                dominant_color = max(counts.items(), key=lambda item: item[1])[0]
+                pixels[w, h] = dominant_color
 
         return new_image
