@@ -6,8 +6,10 @@ import pydub.generators
 from numpy import fft
 
 
-def pitch_shift(time,smoothness):
-    return np.sin(2 * np.pi * smoothness * time)
+def pitch_shift(time, modulation_speed):
+    return np.sin(2 * np.pi * modulation_speed * time)
+
+
 #
 #
 # # Преобразование mp3 в wav и вытаскивание параметов и аудио
@@ -76,32 +78,33 @@ def change_pitch(input_path: str, output_path: str, base_factor, smoothness_coef
     processed_audio = np.zeros_like(audio_data)
 
     for i in range(num_chunks):
-        #берём кусок записи (кол-во чанков из параметра)
+        # берём кусок записи (кол-во чанков из параметра)
         start = i * chunk_size
         end = start + chunk_size
         chunk = audio_data[start:end]
 
-        #Считаем на сколько сильно поменять текущий набор чанков (либо выше либо ниже в зав. от curr_fact относительно времени)
+        # Считаем на сколько сильно поменять текущий набор чанков (либо выше либо ниже в зав. от curr_fact
+        # относительно времени)
         time_pos = i / num_chunks
         current_factor = base_factor + smoothness_coef * pitch_shift(time_pos, modulation_speed)
         # Сдвиг частот и пересобирание элементов чанка
-        chunk_fft = fft.fft(chunk) #получается так : получаем информацию какой звук сколько раз звучит
-        #то есть индекс = частоте, значение амплитуде
+        chunk_fft = fft.fft(chunk)  # получается так: получаем информацию какой звук сколько раз звучит
+        # то есть индекс = частоте, значение амплитуде
         shifted_fft = np.zeros_like(chunk_fft)
 
         for j in range(len(chunk_fft)):
-            new_index = int(j * current_factor) #новое место для модифицированной частоты
+            new_index = int(j * current_factor)  # новое место для модифицированной частоты
             if 0 <= new_index < len(chunk_fft):
-                #тут получается что мы ставит старый звук(например индекс j был 100)
+                # тут получается что мы ставит старый звук(например индекс j был 100)
                 # на новое место (был 100, стал 150 в завис. от 93 строки) и соотв. итоговый массив имеет другое звучание
                 shifted_fft[new_index] += chunk_fft[j]
 
         # Обратное преобразование
-        #пересоберем звук после сдвига
-        processed_chunk = fft.ifft(shifted_fft).real #real,потому что для звука не нужны мнимые(скорее всего)
-        #обрезаем слишком огромные значения , чтобы не произошло жутких искажений
+        # пересоберем звук после сдвига
+        processed_chunk = fft.ifft(shifted_fft).real  # real,потому что для звука не нужны мнимые(скорее всего)
+        # обрезаем слишком огромные значения , чтобы не произошло жутких искажений
         processed_chunk = np.clip(processed_chunk, -32768, 32767).astype(np.int16)
-        #готовый звук записываем в итоговый звук
+        # готовый звук записываем в итоговый звук
         processed_audio[start:end] = processed_chunk
 
     # Сохраняем результат
